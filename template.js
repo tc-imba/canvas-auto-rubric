@@ -30,7 +30,7 @@ function _canvas_auto_rubric(data) {
 
     const student_id = $('#avatar img').attr('src').match('[0-9]+')[0];
     // console.log(student_set);
-    console.log(student_id);
+    console.log(student_set.length, student_id);
 
     if (student_set.has(student_id)) {
       clearInterval(timer);
