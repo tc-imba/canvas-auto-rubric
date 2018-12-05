@@ -13,7 +13,7 @@ function _canvas_auto_rubric(data) {
 
     for (let i = 0; i < data.length; i++) {
       $($inputs[i]).val(data[i]);
-      score += parseInt(data[i]);
+      score += parseFloat(data[i]);
     }
 
     $submit_btn.click();

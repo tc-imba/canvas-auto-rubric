@@ -2,7 +2,9 @@ const fs = require('fs');
 const crypto = require('crypto');
 const hash = crypto.createHash('sha256');
 
-const buffer = fs.readFileSync('ve281.csv');
+const filename = process.argv[2] || 'data.csv';
+console.log(`generate from ${filename}`);
+const buffer = fs.readFileSync(filename);
 const data = buffer.toString().split('\n');
 let map = {};
 for (let i in data) {

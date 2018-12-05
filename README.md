@@ -2,7 +2,11 @@
 
 ## Usage
 
-Run `data.js`
+Run `generate.js` with the csv file of your data.
+
+```
+node generate.js data.csv
+```
 
 ## Plan
 
