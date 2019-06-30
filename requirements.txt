@@ -1,2 +1,3 @@
 canvasapi
-aiohttp
+click
+pbr
