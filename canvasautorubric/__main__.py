@@ -1,4 +1,5 @@
 import csv
+import datetime
 
 import pbr.version
 from canvasapi import Canvas
@@ -21,7 +22,11 @@ def generate_rubric_assessment(rubric_criteria, rubric_description, grades):
 def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description):
     # print(uid, grade, grades)
     submission = assignment.get_submission(uid)
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
+        'comment': {
+            'text_comment': '%s: Updated by canvas-auto-rubric (https://github.com/tc-imba/canvas-auto-rubric)' % now
+        },
         'submission': {
             'posted_grade': grade
         },
