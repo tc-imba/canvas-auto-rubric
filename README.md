@@ -26,6 +26,12 @@ Options:
   --version                 Show the version and exit.
 ```
 
+## Generate key (Access Token) on Canvas
+
+The key can be generated in the `/profile/settings` webpage on canvas, for example, in UMJI, it is https://umjicanvas.com/profile/settings .
+
+In the `Approved Integrations` section, use `New Access Token` to generate a key and use it in this tool.
+
 ## Input File Format
 
 There is a `sample.csv`, of the data

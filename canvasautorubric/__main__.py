@@ -13,15 +13,26 @@ def get_version():
 def generate_rubric_assessment(rubric_criteria, rubric_description, grades):
     rubric_assessment = {}
     for i in range(len(rubric_criteria)):
-        rubric_assessment[rubric_criteria[i]] = {'points': grades[i]}
+        rubric_assessment[rubric_criteria[i]] = {'points': float(grades[i])}
         if rubric_description:
             rubric_assessment[rubric_criteria[i]]['comments'] = rubric_description[i]
     return rubric_assessment
 
 
+def rubric_assessment_is_modified(assessment1, assessment2):
+    if assessment1.keys() != assessment2.keys():
+        return True
+    for key in assessment1.keys():
+        if assessment1[key]['points'] != assessment2[key]['points']:
+            return True
+        if assessment1[key]['comments'] != assessment2[key]['comments']:
+            return True
+    return False
+
+
 def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description):
     # print(uid, grade, grades)
-    submission = assignment.get_submission(uid)
+    submission = assignment.get_submission(uid, include='rubric_assessment')
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
         'comment': {
@@ -36,8 +47,11 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
                                                                rubric_criteria=rubric_criteria,
                                                                rubric_description=rubric_description)
     # print(data)
-    submission.edit(**data)
-    print('Updated:', uid, grade, grades)
+    if rubric_assessment_is_modified(submission.rubric_assessment, data['rubric_assessment']):
+        submission.edit(**data)
+        print('Updated:', uid, grade, grades)
+    else:
+        print('Not Modified:', uid)
     return uid
 
 
@@ -91,6 +105,7 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, h
             grade = sum(map(float, grades))
         update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
                      rubric_criteria=rubric_criteria, rubric_description=rubric_description)
+        # break
 
 
 if __name__ == '__main__':
