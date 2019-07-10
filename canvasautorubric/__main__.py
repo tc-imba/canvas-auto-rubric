@@ -4,6 +4,7 @@ import time
 
 import pbr.version
 from canvasapi import Canvas
+from canvasapi.exceptions import CanvasException
 import click
 
 
@@ -54,7 +55,6 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
         print('Updated:', uid, grade, grades)
     else:
         print('Not Modified:', uid)
-        time.sleep(0.3)
     return uid
 
 
@@ -107,9 +107,12 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, h
             grade = grades[-1]
         else:
             grade = sum(map(float, grades))
-        update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
-                     rubric_criteria=rubric_criteria, rubric_description=rubric_description,
-                     no_comment=no_comment)
+        try:
+            update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
+                         rubric_criteria=rubric_criteria, rubric_description=rubric_description,
+                         no_comment=no_comment)
+        except CanvasException as e:
+            print('Error:', uid, e.message)
         # print(no_comment)
         # break
 
