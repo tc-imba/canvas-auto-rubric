@@ -22,6 +22,10 @@ Options:
   -i, --input FILENAME      CSV file with grades.  [required]
   --no-sum                  Use the last row of the grade file as the total
                             grade.
+  --header                  Use the first row of the grade file as
+                            description.
+  --no-comment              Do not add a update comment in the submission
+                            comments.
   -h, --help                Show this message and exit.
   --version                 Show the version and exit.
 ```

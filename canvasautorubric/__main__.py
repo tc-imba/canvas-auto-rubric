@@ -1,5 +1,6 @@
 import csv
 import datetime
+import time
 
 import pbr.version
 from canvasapi import Canvas
@@ -30,18 +31,19 @@ def rubric_assessment_is_modified(assessment1, assessment2):
     return False
 
 
-def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description):
+def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description, no_comment):
     # print(uid, grade, grades)
     submission = assignment.get_submission(uid, include='rubric_assessment')
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
-        'comment': {
-            'text_comment': '%s: Updated by canvas-auto-rubric (https://github.com/tc-imba/canvas-auto-rubric)' % now
-        },
         'submission': {
             'posted_grade': grade
         },
     }
+    if not no_comment:
+        data['comment'] = {
+            'text_comment': '%s: Updated by canvas-auto-rubric (https://github.com/tc-imba/canvas-auto-rubric)' % now
+        }
     if rubric_criteria:
         data['rubric_assessment'] = generate_rubric_assessment(grades=grades,
                                                                rubric_criteria=rubric_criteria,
@@ -52,6 +54,7 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
         print('Updated:', uid, grade, grades)
     else:
         print('Not Modified:', uid)
+        time.sleep(0.3)
     return uid
 
 
@@ -64,9 +67,10 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
 @click.option('-i', '--input', required=True, type=click.File(), help='CSV file with grades.')
 @click.option('--no-sum', is_flag=True, help='Use the last row of the grade file as the total grade.')
 @click.option('--header', is_flag=True, help='Use the first row of the grade file as description.')
+@click.option('--no-comment', is_flag=True, help='Do not add a update comment in the submission comments.')
 @click.help_option('-h', '--help')
 @click.version_option(version=get_version())
-def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, header):
+def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, header, no_comment):
     canvas = Canvas(api_url, api_key)
     course = canvas.get_course(course_id)
     print('Course:', course)
@@ -104,7 +108,9 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, h
         else:
             grade = sum(map(float, grades))
         update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
-                     rubric_criteria=rubric_criteria, rubric_description=rubric_description)
+                     rubric_criteria=rubric_criteria, rubric_description=rubric_description,
+                     no_comment=no_comment)
+        # print(no_comment)
         # break
 
 
