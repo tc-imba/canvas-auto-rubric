@@ -50,7 +50,7 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
                                                                rubric_criteria=rubric_criteria,
                                                                rubric_description=rubric_description)
     # print(data)
-    if 'rubric_assessment' not in submission or \
+    if 'rubric_assessment' not in submission.attributes or \
             rubric_assessment_is_modified(submission.rubric_assessment, data['rubric_assessment']):
         submission.edit(**data)
         print('Updated:', uid, grade, grades)
