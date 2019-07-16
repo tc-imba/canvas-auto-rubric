@@ -25,9 +25,9 @@ def rubric_assessment_is_modified(assessment1, assessment2):
     if assessment1.keys() != assessment2.keys():
         return True
     for key in assessment1.keys():
-        if assessment1[key]['points'] != assessment2[key]['points']:
+        if assessment1[key].get('points', None) != assessment2[key].get('points', None):
             return True
-        if assessment1[key]['comments'] != assessment2[key]['comments']:
+        if assessment1[key].get('comments', None) != assessment2[key].get('comments', None):
             return True
     return False
 
@@ -51,7 +51,7 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
                                                                rubric_description=rubric_description)
     # print(data)
     if 'rubric_assessment' not in submission.attributes or \
-            rubric_assessment_is_modified(submission.rubric_assessment, data['rubric_assessment']):
+        rubric_assessment_is_modified(submission.rubric_assessment, data['rubric_assessment']):
         submission.edit(**data)
         print('Updated:', uid, grade, grades)
     else:
