@@ -9,7 +9,7 @@ pip install git+https://github.com/tc-imba/canvas-auto-rubric.git@master
 
 ## Usage
 
-```bash
+```
 Usage: canvasautorubric [OPTIONS]
 
 Options:
@@ -30,13 +30,42 @@ Options:
   --version                 Show the version and exit.
 ```
 
-## Generate key (Access Token) on Canvas
+Please **carefully** follow the steps listed below.
 
-The key can be generated in the `/profile/settings` webpage on canvas, for example, in UMJI, it is https://umjicanvas.com/profile/settings .
+### Generate key (Access Token) on Canvas
 
-In the `Approved Integrations` section, use `New Access Token` to generate a key and use it in this tool.
+The key can be generated in the `/profile/settings` webpage on canvas, for example, in UMJI, it is <a href="https://umjicanvas.com/profile/settings" target="_blank">https://umjicanvas.com/profile/settings</a>.
 
-## Input File Format
+In the `Approved Integrations` section, use `New Access Token` to generate a key.
+
+![Generate Access Token](docs/generate_access_token.png)
+
+The generated key will be shown here.
+
+![Access Token](docs/access_token.png)
+
+It is `Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX`. Please keep this key secret, do not give to anyone else because it have the whole access to your canvas account. 
+
+> Once you leave this page you won't be able to retrieve the full token anymore, you'll have to regenerate it to get a new value.
+
+### Obtain Course ID, Assignment ID and Create a Rubric (with a Rubric ID)
+
+Open the assignment you want to grade on canvas, you can easily find the Course ID and Assignment ID in the navbar. And you can then create a rubric (or select an existing one) on this page.
+
+![Rubric](docs/rubric.png)
+
+For example, the url is `https://umjicanvas.com/courses/786/assignments/7081`, so the Course ID is `786` and the Assignment ID is `7081`.
+
+The way to get Rubric ID is a bit more tricky. Assuming that you are using Chrome, right click the name of the rubric and select `Chrome Devtools` (or `检查`, `审查元素`), the rubric id will be shown in the dev tools.
+
+![Rubric ID](docs/rubric_id.png)
+
+If you can't find out that the Rubric ID is `182`, please close this page and go to doctor. (CR. [Reapor-Yurnero](https://github.com/Reapor-Yurnero) when playing DoTA2
+)
+
+**If a rubric is just created and never used, this tool won't work. You can give a random score to any student in an assignment using this rubric in the SpeedGrader before running this tool. Don't worry about the random score because all scores will be updated after running this tool.**
+
+### Input File Format
 
 There is a `sample.csv`, of the data
 ```bash
@@ -55,11 +84,17 @@ There is a `sample.csv`, of the data
 2649,0,0,0,0
 ```
 
-The first column is the canvas uid, which can be found in the csv file exported from the `grades` page.
+The first column is the canvas uid, which can be found in the csv file exported from the `Grades` page.
 
 The rest columns are the grades in the order of which the rubric defines.
 
 The total grade of one student is the sum of these columns. If the `--no-sum` argument is passed, the last column will be the total grade instead.
+
+### Sample Usage
+
+```bash
+canvasautorubric -u https://umjicanvas.com/ -k Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX -c 786 -a 7081 -r 182 -i sample.csv
+```
 
 ## Licence
 
