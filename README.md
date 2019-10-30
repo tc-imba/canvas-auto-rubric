@@ -44,7 +44,7 @@ The generated key will be shown here.
 
 ![Access Token](docs/access_token.png)
 
-It is `Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX`. Please keep this key secret, do not give to anyone else because it have the whole access to your canvas account. 
+It is `Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX`. Please keep this key secret, do not give to anyone else because it can provide the whole access to your canvas account. You need to save this key somewhere because
 
 > Once you leave this page you won't be able to retrieve the full token anymore, you'll have to regenerate it to get a new value.
 
