@@ -110,18 +110,21 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input, no_sum, h
             header = False
             continue
         uid = row[0]
-        grades = row[1:]
-        if no_sum:
-            grade = grades[-1]
-        else:
-            grade = sum(map(float, grades))
         try:
+            grades = row[1:]
+            if no_sum:
+                grade = grades[-1]
+            else:
+                grade = sum(map(float, grades))
             update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
                          rubric_criteria=rubric_criteria, rubric_description=rubric_description,
                          no_comment=no_comment)
         except CanvasException as e:
             print('Error:', uid, e.message)
-        # print(no_comment)
+        except Exception as e:
+            print('Error:', uid, e)
+
+            # print(no_comment)
         # break
 
 
