@@ -1,6 +1,7 @@
 import csv
 import datetime
 import time
+from pprint import pprint
 
 import pbr.version
 from canvasapi import Canvas
@@ -35,6 +36,7 @@ def rubric_assessment_is_modified(assessment1, assessment2):
 def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description, no_comment):
     # print(uid, grade, grades)
     submission = assignment.get_submission(uid, include='rubric_assessment')
+    # pprint(submission.attributes)
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
         'submission': {
@@ -45,17 +47,22 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
         data['comment'] = {
             'text_comment': '%s: Updated by canvas-auto-rubric (https://github.com/tc-imba/canvas-auto-rubric)' % now
         }
+    new_rubric_assessment = None
     if rubric_criteria:
-        data['rubric_assessment'] = generate_rubric_assessment(grades=grades,
-                                                               rubric_criteria=rubric_criteria,
-                                                               rubric_description=rubric_description)
+        new_rubric_assessment = generate_rubric_assessment(grades=grades,
+                                                           rubric_criteria=rubric_criteria,
+                                                           rubric_description=rubric_description)
     # print(data)
-    if 'rubric_assessment' not in submission.attributes or \
-        rubric_assessment_is_modified(submission.rubric_assessment, data['rubric_assessment']):
+    if new_rubric_assessment and ('rubric_assessment' not in submission.attributes or
+                                  rubric_assessment_is_modified(submission.rubric_assessment, new_rubric_assessment)):
+        data['rubric_assessment'] = new_rubric_assessment
         submission.edit(**data)
-        print('Updated:', uid, grade, grades)
-    else:
+        print('Updated Rubric:', uid, grade, grades)
+    elif 'grade' in submission.attributes and float(submission.attributes['grade']) == grade:
         print('Not Modified:', uid)
+    else:
+        submission.edit(**data)
+        print('Updated Grade:', uid, grade, grades)
     return uid
 
 
