@@ -1,3 +1,4 @@
 canvasapi
 click
 pbr
+logzero

@@ -19,7 +19,7 @@ Options:
   -c, --course-id TEXT      The Course ID of the target.  [required]
   -a, --assignment-id TEXT  The Assignment ID of the target.  [required]
   -r, --rubric-id TEXT      The Rubric ID of the target.
-  -i, --input FILENAME      CSV file with grades.  [required]
+  -i, --input-file FILENAME CSV file with grades.  [required]
   --no-sum                  Use the last row of the grade file as the total
                             grade.
   --header                  Use the first row of the grade file as
