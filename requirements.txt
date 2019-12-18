@@ -2,3 +2,7 @@ canvasapi
 click
 pbr
 logzero
+scipy
+pandas
+xlrd
+matplotlib
