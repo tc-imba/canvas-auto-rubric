@@ -39,10 +39,17 @@ def rubric_assessment_is_modified(assessment1, assessment2):
     return False
 
 
+def get_grade_float(grade):
+    try:
+        return float(grade)
+    except:
+        return 0
+
+
 def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description, no_comment):
     # print(uid, grade, grades)
     submission = assignment.get_submission(uid, include='rubric_assessment')
-    # pprint(submission.attributes)
+    # pprint(submission)
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
         'submission': {
@@ -59,12 +66,12 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
                                                            rubric_criteria=rubric_criteria,
                                                            rubric_description=rubric_description)
     # print(data)
-    if new_rubric_assessment and ('rubric_assessment' not in submission.attributes or
+    if new_rubric_assessment and (not hasattr(submission, 'rubric_assessment') or
                                   rubric_assessment_is_modified(submission.rubric_assessment, new_rubric_assessment)):
         data['rubric_assessment'] = new_rubric_assessment
         submission.edit(**data)
         logger.info('Updated Rubric: %s %s %s', uid, grade, grades)
-    elif 'grade' in submission.attributes and float(submission.attributes['grade']) == grade:
+    elif hasattr(submission, 'grade') and get_grade_float(submission.grade) == grade:
         logger.info('Not Modified: %s', uid)
     else:
         submission.edit(**data)
@@ -82,8 +89,8 @@ def get_rubric_criteria(course, rubric_id):
             rubric_detail = rubric.data
         else:
             rubric_with_assessments = course.get_rubric(rubric_id, include='assessments', style='full')
-            # pprint(rubric_with_assessments.attributes)
-            if 'assessments' in rubric_with_assessments.__dict__:
+            # pprint(rubric_with_assessments)
+            if hasattr(rubric_with_assessments, 'assessments'):
                 rubric_detail = rubric_with_assessments.assessments[0]['data']
         if rubric_detail:
             rubric_criteria = [x['criterion_id'] for x in rubric_detail]

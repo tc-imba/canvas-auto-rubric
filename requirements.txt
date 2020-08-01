@@ -1,4 +1,4 @@
-canvasapi
+canvasapi==1.0.0
 click
 pbr
 logzero

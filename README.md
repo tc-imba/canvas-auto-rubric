@@ -2,8 +2,21 @@
 
 ## Installation
 
+(choose one of these methods)
+
+### Simple Usage
+
 ```bash
-pip install git+https://github.com/tc-imba/canvas-auto-rubric.git@master
+pip3 install git+https://github.com/tc-imba/canvas-auto-rubric.git@master
+```
+
+### Local Install or Debug
+
+```bash
+git clone git@github.com:tc-imba/canvas-auto-rubric.git
+cd canvas-auto-rubric
+# you can setup a virtual python env before install here
+pip3 install -e .
 ```
 
 
