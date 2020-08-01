@@ -103,6 +103,8 @@ The rest columns are the grades in the order of which the rubric defines.
 
 The total grade of one student is the sum of these columns. If the `--no-sum` argument is passed, the last column will be the total grade instead.
 
+If the you set the first row of the csv file as a header line, and the `--header` argument is passed, each of the header column will be a comment as a description.
+
 ### Sample Usage
 
 ```bash
