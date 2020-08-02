@@ -4,7 +4,7 @@
 
 (choose one of these methods)
 
-### Simple Usage
+### Install as a Python Library
 
 ```bash
 pip3 install git+https://github.com/tc-imba/canvas-auto-rubric.git@master
@@ -22,26 +22,72 @@ pip3 install -e .
 
 ## Usage
 
+### canvasautorubric
+
 ```
 Usage: canvasautorubric [OPTIONS]
 
 Options:
-  -u, --api-url TEXT        The Canvas LMS API URL.  [default:
-                            https://umjicanvas.com/]
-  -k, --api-key TEXT        The Canvas LMS API KEY.  [required]
-  -c, --course-id TEXT      The Course ID of the target.  [required]
-  -a, --assignment-id TEXT  The Assignment ID of the target.  [required]
-  -r, --rubric-id TEXT      The Rubric ID of the target.
-  -i, --input-file FILENAME CSV file with grades.  [required]
-  --no-sum                  Use the last row of the grade file as the total
-                            grade.
-  --header                  Use the first row of the grade file as
-                            description.
-  --no-comment              Do not add a update comment in the submission
-                            comments.
-  -h, --help                Show this message and exit.
-  --version                 Show the version and exit.
+  -u, --api-url TEXT         The Canvas LMS API URL.  [default:
+                             https://umjicanvas.com/]
+
+  -k, --api-key TEXT         The Canvas LMS API KEY.  [required]
+  -c, --course-id TEXT       The Course ID of the target.  [required]
+  -a, --assignment-id TEXT   The Assignment ID of the target.  [required]
+  -r, --rubric-id TEXT       The Rubric ID of the target.
+  -i, --input-file FILENAME  CSV file with grades.  [required]
+  --no-sum                   Use the last row of the grade file as the total
+                             grade.
+
+  --header                   Use the first row of the grade file as
+                             description.
+
+  --no-comment               Do not add a update comment in the submission
+                             comments.
+
+  -h, --help                 Show this message and exit.
+  --version                  Show the version and exit.
 ```
+
+### canvasautoplot
+
+```bash
+Usage: canvasautoplot [OPTIONS]
+
+Options:
+  -i, --input-file PATH   CSV/XLSX input file with grades.  [required]
+  -o, --output-file PATH  PNG/EPS/PDF output file with distribution.
+                          [required]
+
+  --column INTEGER        Plot the specific column (the last column is -1).
+                          [default: -1]
+
+  --sum                   Plot the sum of all columns, will ignore the
+                          --column parameter.
+
+  --header                Skip the first row.
+  --preview               Preview the plot before output.
+  --xmin INTEGER          Min value of x-axis (grade).  [default: 0]
+  --xmax INTEGER          Max value of x-axis (grade).  [default: 100]
+  --bins INTEGER          Number of histogram bins.  [default: 20]
+  --ytick INTEGER         Step between labels of y-axis (frequency).
+                          [default: 5]
+
+  --title TEXT            Title of the plot.  [default: Grades Plot]
+  -h, --help              Show this message and exit.
+  --version               Show the version and exit.
+```
+
+### Sample Usage
+
+You can use the same csv file for the two programs.
+
+```bash
+canvasautorubric -u https://umjicanvas.com/ -k Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX -c 786 -a 7081 -r 182 -i sample.csv
+canvasautoplot -i sample.csv -o sample.pdf --ytick 2 --preview
+```
+
+## Workflow
 
 Please **carefully** follow the steps listed below.
 
@@ -78,7 +124,7 @@ If you can't find out that the Rubric ID is `182`, please close this page and go
 
 **If a rubric is just created and never used, this tool won't work. You can give a random score to any student in an assignment using this rubric in the SpeedGrader before running this tool. Don't worry about the random score because all scores will be updated after running this tool.**
 
-### Input File Format
+## Input File Format
 
 There is a `sample.csv`, of the data
 ```bash
@@ -105,11 +151,6 @@ The total grade of one student is the sum of these columns. If the `--no-sum` ar
 
 If the you set the first row of the csv file as a header line, and the `--header` argument is passed, each of the header column will be a comment as a description.
 
-### Sample Usage
-
-```bash
-canvasautorubric -u https://umjicanvas.com/ -k Yy8WeJFndZ2oeorbQ3K0TMJ98u4l5QvftTe1YQgaemFVfxvNsLexSSja7SYx6hgX -c 786 -a 7081 -r 182 -i sample.csv
-```
 
 ## Licence
 
@@ -117,5 +158,11 @@ Apache 2.0
 
 ## Dependencies
 
++ canvasapi==1.0.0
 + click
-+ canvasapi
++ pbr
++ logzero
++ scipy
++ pandas
++ xlrd
++ matplotlib

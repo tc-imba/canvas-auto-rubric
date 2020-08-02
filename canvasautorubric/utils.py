@@ -1,7 +1,12 @@
 import os
+import pbr.version
 
 import numpy as npy
 import pandas
+
+
+def get_version():
+    return pbr.version.VersionInfo('canvasautorubric')
 
 
 def read_data(input_file, header=False):

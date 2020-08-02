@@ -3,7 +3,7 @@ import datetime
 import time
 from pprint import pprint
 
-import pbr.version
+from canvasautorubric import utils
 from canvasapi import Canvas
 from canvasapi.exceptions import CanvasException
 import click
@@ -13,10 +13,6 @@ from logzero import logger
 LOGGER_FORMAT = '%(color)s[%(levelname)1.1s %(asctime)s canvasautorubric:%(lineno)d]%(end_color)s %(message)s'
 formatter = logzero.LogFormatter(fmt=LOGGER_FORMAT)
 logzero.setup_default_logger(formatter=formatter)
-
-
-def get_version():
-    return pbr.version.VersionInfo('canvasautorubric')
 
 
 def generate_rubric_assessment(rubric_criteria, rubric_description, grades):
@@ -112,9 +108,9 @@ def get_rubric_criteria(course, rubric_id):
 @click.option('--header', is_flag=True, help='Use the first row of the grade file as description.')
 @click.option('--no-comment', is_flag=True, help='Do not add a update comment in the submission comments.')
 @click.help_option('-h', '--help')
-@click.version_option(version=get_version())
+@click.version_option(version=utils.get_version())
 def main(api_url, api_key, course_id, assignment_id, rubric_id, input_file, no_sum, header, no_comment):
-    logger.info('Canvas Auto Rubric: version %s', get_version())
+    logger.info('Canvas Auto Rubric: version %s', utils.get_version())
     canvas = Canvas(api_url, api_key)
     course = canvas.get_course(course_id)
     logger.info('Course: %s', course)
