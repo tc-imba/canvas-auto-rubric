@@ -15,10 +15,17 @@ formatter = logzero.LogFormatter(fmt=LOGGER_FORMAT)
 logzero.setup_default_logger(formatter=formatter)
 
 
+def parse_grade(grade_str):
+    try:
+        return float(grade_str)
+    except:
+        return 0
+
+
 def generate_rubric_assessment(rubric_criteria, rubric_description, grades):
     rubric_assessment = {}
     for i in range(len(rubric_criteria)):
-        rubric_assessment[rubric_criteria[i]] = {'points': float(grades[i])}
+        rubric_assessment[rubric_criteria[i]] = {'points': parse_grade(grades[i])}
         if rubric_description:
             rubric_assessment[rubric_criteria[i]]['comments'] = rubric_description[i]
     return rubric_assessment
@@ -141,7 +148,7 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input_file, no_s
             if no_sum:
                 grade = grades[-1]
             else:
-                grade = sum(map(float, grades))
+                grade = sum(map(parse_grade, grades))
             update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
                          rubric_criteria=rubric_criteria, rubric_description=rubric_description,
                          no_comment=no_comment)
