@@ -4,5 +4,6 @@ pbr
 logzero
 scipy
 pandas
-xlrd
+openpyxl
 matplotlib
+enlighten

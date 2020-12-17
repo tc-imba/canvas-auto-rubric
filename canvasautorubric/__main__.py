@@ -1,7 +1,6 @@
-import csv
 import datetime
-import time
-from pprint import pprint
+import math
+import enlighten
 
 from canvasautorubric import utils
 from canvasapi import Canvas
@@ -17,9 +16,12 @@ logzero.setup_default_logger(formatter=formatter)
 
 def parse_grade(grade_str):
     try:
-        return float(grade_str)
+        grade = float(grade_str)
+        if not math.isnan(grade):
+            return grade
     except:
-        return 0
+        pass
+    return 0
 
 
 def generate_rubric_assessment(rubric_criteria, rubric_description, grades):
@@ -49,7 +51,7 @@ def get_grade_float(grade):
         return 0
 
 
-def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description, no_comment):
+def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_description, no_comment, dry_run):
     # print(uid, grade, grades)
     submission = assignment.get_submission(uid, include='rubric_assessment')
     # pprint(submission)
@@ -72,12 +74,14 @@ def update_grade(assignment, uid, grade, grades, rubric_criteria, rubric_descrip
     if new_rubric_assessment and (not hasattr(submission, 'rubric_assessment') or
                                   rubric_assessment_is_modified(submission.rubric_assessment, new_rubric_assessment)):
         data['rubric_assessment'] = new_rubric_assessment
-        submission.edit(**data)
+        if not dry_run:
+            submission.edit(**data)
         logger.info('Updated Rubric: %s %s %s', uid, grade, grades)
     elif hasattr(submission, 'grade') and get_grade_float(submission.grade) == grade:
         logger.info('Not Modified: %s', uid)
     else:
-        submission.edit(**data)
+        if not dry_run:
+            submission.edit(**data)
         logger.info('Updated Grade: %s %s %s', uid, grade, grades)
     return uid
 
@@ -110,13 +114,18 @@ def get_rubric_criteria(course, rubric_id):
 @click.option('-c', '--course-id', required=True, help='The Course ID of the target.')
 @click.option('-a', '--assignment-id', required=True, help='The Assignment ID of the target.')
 @click.option('-r', '--rubric-id', help='The Rubric ID of the target.')
-@click.option('-i', '--input-file', required=True, type=click.File(), help='CSV file with grades.')
+@click.option('-i', '--input-file', required=True, type=click.Path(exists=True), help='CSV/XLS(X) file with grades.')
+@click.option('--sheet', default=0, show_default=True, help='The sheet id in XLS(X) file')
 @click.option('--no-sum', is_flag=True, help='Use the last row of the grade file as the total grade.')
 @click.option('--header', is_flag=True, help='Use the first row of the grade file as description.')
 @click.option('--no-comment', is_flag=True, help='Do not add a update comment in the submission comments.')
+@click.option('--debug', is_flag=True, help='Debug mode.')
+@click.option('--dry-run', is_flag=True,
+              help='Nothing is actually updated, the actions to be performed are written to the terminal.')
 @click.help_option('-h', '--help')
 @click.version_option(version=utils.get_version())
-def main(api_url, api_key, course_id, assignment_id, rubric_id, input_file, no_sum, header, no_comment):
+def main(api_url, api_key, course_id, assignment_id, rubric_id, input_file,
+         sheet, no_sum, header, no_comment, debug, dry_run):
     logger.info('Canvas Auto Rubric: version %s', utils.get_version())
     canvas = Canvas(api_url, api_key)
     course = canvas.get_course(course_id)
@@ -134,29 +143,33 @@ def main(api_url, api_key, course_id, assignment_id, rubric_id, input_file, no_s
         logger.info('Use the first row of the grade file as description. (--header)')
     if no_comment:
         logger.info('Do not add a update comment in the submission comments. (--no-comment)')
+    if dry_run:
+        logger.warn('Nothing is actually updated, the actions to be performed are written to the terminal. (--dry-run)')
 
-    reader = csv.reader(input_file)
-    rubric_description = None
-    for row in reader:
-        if header:
-            rubric_description = row[1:]
-            header = False
-            continue
-        uid = row[0]
+    df = utils.read_data(input_file, header, sheet)
+    if header:
+        rubric_description = df.columns.tolist()
+    else:
+        rubric_description = None
+
+    manager = enlighten.get_manager()
+    pbar = manager.counter(total=len(df), desc='Progress', unit='ticks')
+    for uid, row in df.iterrows():
         try:
-            grades = row[1:]
+            grades = list(map(parse_grade, row.tolist()))
             if no_sum:
                 grade = grades[-1]
+                grades = grades[:-1]
             else:
-                grade = sum(map(parse_grade, grades))
+                grade = sum(grades)
             update_grade(assignment=assignment, uid=uid, grade=grade, grades=grades,
                          rubric_criteria=rubric_criteria, rubric_description=rubric_description,
-                         no_comment=no_comment)
+                         no_comment=no_comment, dry_run=dry_run)
         except Exception as e:
-            logger.error('Error: uid: %s', uid)
-            logger.exception(e)
-            # print(no_comment)
-        # break
+            logger.error('Error: %s %s', uid, str(e))
+            if debug:
+                logger.exception(e)
+        pbar.update()
 
 
 if __name__ == '__main__':
