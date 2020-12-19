@@ -1,5 +1,7 @@
 # Usage
 
+## Commands
+
 ```bash
 Usage: canvasautoplot [OPTIONS]
 
@@ -22,6 +24,7 @@ Options:
   --ytick INTEGER         Step between labels of y-axis (frequency).
                           [default: 5]
 
+  --dpi FLOAT             DPI of output.  [default: 300.0]
   --title TEXT            Title of the plot.  [default: Grades Plot]
   -h, --help              Show this message and exit.
   --version               Show the version and exit.
@@ -33,4 +36,7 @@ Options:
 ```bash
 canvasautoplot -i sample.csv -o sample.pdf --ytick 2 --preview
 ```
+
+![Sample Output](images/sample.png)
+
 

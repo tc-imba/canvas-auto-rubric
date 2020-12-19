@@ -6,7 +6,7 @@ import numpy as npy
 import matplotlib.pyplot as plt
 
 
-def plot_distribution(scores, title='Grades', xmin=0, xmax=100, bins=20, ytick=5, filename='fig.pdf', preview=False):
+def plot_distribution(scores, title='Grades', xmin=0, xmax=100, bins=20, ytick=5, filename='fig.pdf', preview=False, dpi=300):
     x_grid = npy.linspace(xmin, xmax, 2000)
     bin_grid = npy.linspace(xmin, xmax, bins + 1)
     mean = npy.around(npy.mean(scores), 3)
@@ -48,9 +48,10 @@ def plot_distribution(scores, title='Grades', xmin=0, xmax=100, bins=20, ytick=5
     plt.title(title)
     plt.xlabel('Score')
     plt.ylabel('Frequency')
+    plt.tight_layout()
     if preview:
         plt.show()
-    fig.savefig(fname=filename)
+    fig.savefig(fname=filename, dpi=dpi)
 
 
 @click.command()
@@ -66,17 +67,18 @@ def plot_distribution(scores, title='Grades', xmin=0, xmax=100, bins=20, ytick=5
 @click.option('--xmax', default=100, show_default=True, help='Max value of x-axis (grade).')
 @click.option('--bins', default=20, show_default=True, help='Number of histogram bins.')
 @click.option('--ytick', default=5, show_default=True, help='Step between labels of y-axis (frequency).')
+@click.option('--dpi', default=300.0, show_default=True, help='DPI of output.')
 @click.option('--title', default='Grades Plot', show_default=True, help='Title of the plot.')
 @click.help_option('-h', '--help')
 @click.version_option(version=utils.get_version())
-def main(input_file, output_file, column, sum, header, preview, xmin, xmax, bins, ytick, title):
+def main(input_file, output_file, column, sum, header, preview, xmin, xmax, bins, ytick, dpi, title):
     df = utils.read_data(input_file, header)
     if sum:
         data = df.sum(1)
     else:
         data = df.iloc[:, column]
     plot_distribution(data, xmin=xmin, xmax=xmax, bins=bins, title=title, ytick=ytick, filename=output_file,
-                      preview=preview)
+                      preview=preview, dpi=dpi)
 
 
 if __name__ == '__main__':
