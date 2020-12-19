@@ -31,7 +31,12 @@ Please **carefully** follow the steps listed in [Canvas Workflow](workflow.md) b
 ## Commands
 
 * [`canvasautorubric`](canvasautorubric.md) - Sync the rubric on canvas.
+
+![Terminal](record/record.gif)
+
 * [`canvasautoplot`](canvasautoplot.md) - Plot the grade distribution.
+
+![Sample Output](images/sample.png)
 
 ## Licence        
                   

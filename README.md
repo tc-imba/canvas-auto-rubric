@@ -2,6 +2,14 @@
 
 Please find the detailed documentation [here](https://tc-imba.github.io/canvas-auto-rubric).
 
+* [`canvasautorubric`](https://tc-imba.github.io/canvas-auto-rubric/canvasautorubric) - Sync the rubric on canvas.
+
+![Terminal](docs/record/record.gif)
+
+* [`canvasautoplot`](https://tc-imba.github.io/canvas-auto-rubric/canvasautoplot) - Plot the grade distribution.
+
+![Sample Output](docs/images/sample.png)
+
 ## Installation
 
 (choose one of these methods)
