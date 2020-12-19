@@ -17,6 +17,12 @@
     pip3 install -e .
     ```
 
+## Input Format
+
+All commands shares the same [Input Format](input.md). 
+
+Currently, only `csv` files are fully supported. Support for `xls/xlsx` files is in beta status and is not recommended to use. 
+
 ## Canvas Workflow
 
 Please **carefully** follow the steps listed in [Canvas Workflow](workflow.md) before using the `canvasautorubric` program.

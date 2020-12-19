@@ -1,4 +1,4 @@
-# Input File Format
+# Input Format
 
 There is a `sample.csv` in the repository, with the data
 ```bash
