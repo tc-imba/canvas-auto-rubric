@@ -38,7 +38,7 @@ def plot_distribution(scores, title='Grades', xmin=0, xmax=100, bins=20, ytick=5
     locs = npy.arange(0, ymax + 1, ytick)
     labels = map(lambda x: str(int(x)), locs)
     plt.yticks(locs, labels)
-    plt.ylim(0, ymax + box_width * 5)
+    plt.ylim(xmin, ymax + box_width * 5)
 
     with npy.printoptions(precision=3):
         text = '  Q1: %s\n  Q2: %s\n  Q3: %s\nMean: %s\n Std: %s\n' % (q1, q2, q3, mean, std)
