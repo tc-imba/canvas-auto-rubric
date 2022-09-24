@@ -100,7 +100,7 @@ def get_rubric_criteria(course, rubric_id):
             if hasattr(rubric_with_assessments, 'assessments'):
                 rubric_detail = rubric_with_assessments.assessments[0]['data']
         if rubric_detail:
-            rubric_criteria = [x['criterion_id'] for x in rubric_detail]
+            rubric_criteria = [x['id'] for x in rubric_detail]
             logger.info('Rubric Criteria: %s', rubric_criteria)
         else:
             logger.warning('Fetch Rubric data failed.')
@@ -109,7 +109,7 @@ def get_rubric_criteria(course, rubric_id):
 
 
 @click.command()
-@click.option('-u', '--api-url', default='https://umjicanvas.com/', show_default=True, help='The Canvas LMS API URL.')
+@click.option('-u', '--api-url', default='https://jicanvas.com/', show_default=True, help='The Canvas LMS API URL.')
 @click.option('-k', '--api-key', required=True, help='The Canvas LMS API KEY.')
 @click.option('-c', '--course-id', required=True, help='The Course ID of the target.')
 @click.option('-a', '--assignment-id', required=True, help='The Assignment ID of the target.')
